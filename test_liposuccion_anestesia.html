@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autoevaluación</title>
+<style>
+  :root{
+    --bg:#EEF4F5; --card:#FFFFFF; --ink:#0E2A3B; --muted:#5B7383;
+    --teal:#0E7C86; --mint:#16B8A6; --line:#D7E3E6;
+    --good:#0E7C86; --good-bg:#E4F3F1; --bad:#B4453A; --bad-bg:#F7E7E4;
+    --shadow:0 10px 30px rgba(14,42,59,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 500px at 80% -10%, #DCECEC 0%, transparent 60%),var(--bg);
+    color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; -webkit-font-smoothing:antialiased}
+  .wrap{width:100%; max-width:640px}
+  .stage{background:var(--card); border-radius:22px; box-shadow:var(--shadow); padding:34px 32px 30px; position:relative; overflow:hidden}
+  .eyebrow{display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--teal); font-weight:700}
+  .pulse{width:26px; height:14px}
+  .pulse path{fill:none; stroke:var(--mint); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round}
+  h1{font-family:Georgia,"Times New Roman",serif; font-weight:700; line-height:1.15; font-size:30px; margin:14px 0 10px; letter-spacing:-.01em}
+  .lede{color:var(--muted); font-size:15.5px; line-height:1.55; margin-bottom:24px}
+  .meta{display:flex; gap:18px; margin:22px 0 26px; flex-wrap:wrap}
+  .meta div{font-size:13px; color:var(--muted)}
+  .meta b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--ink); font-weight:700}
+  .btn{appearance:none; border:0; cursor:pointer; font:inherit; font-weight:650; background:var(--teal); color:#fff; padding:15px 26px; border-radius:12px; font-size:15.5px; transition:transform .12s ease, background .12s ease; width:100%}
+  .btn:hover{background:#0b6771; transform:translateY(-1px)}
+  .btn:focus-visible{outline:3px solid var(--mint); outline-offset:2px}
+  .btn.ghost{background:transparent; color:var(--teal); box-shadow:inset 0 0 0 1.5px var(--line)}
+  .btn.ghost:hover{background:#F1F7F7}
+  .track{height:6px; background:#E3ECEE; border-radius:99px; overflow:hidden; margin-bottom:8px}
+  .fill{height:100%; width:0; background:linear-gradient(90deg,var(--teal),var(--mint)); border-radius:99px; transition:width .4s ease}
+  .counter{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-bottom:22px; font-variant-numeric:tabular-nums}
+  .counter .idx{font-weight:700; color:var(--teal); letter-spacing:.05em}
+  .q{font-family:Georgia,serif; font-size:22px; line-height:1.35; margin-bottom:22px}
+  .opts{display:flex; flex-direction:column; gap:11px}
+  .opt{text-align:left; background:#F7FAFA; border:1.5px solid var(--line); border-radius:13px; padding:15px 16px; font:inherit; font-size:15px; cursor:pointer; color:var(--ink); display:flex; align-items:center; gap:13px; transition:border-color .12s, background .12s}
+  .opt:hover:not(:disabled){border-color:var(--teal); background:#F0F7F7}
+  .opt:focus-visible{outline:3px solid var(--mint); outline-offset:2px}
+  .opt .key{flex:0 0 26px; height:26px; border-radius:7px; background:#E5EEEF; color:var(--teal); font-weight:700; font-size:13px; display:grid; place-items:center}
+  .opt.correct{border-color:var(--good); background:var(--good-bg)}
+  .opt.correct .key{background:var(--good); color:#fff}
+  .opt.wrong{border-color:var(--bad); background:var(--bad-bg)}
+  .opt.wrong .key{background:var(--bad); color:#fff}
+  .opt:disabled{cursor:default}
+  .explain{margin-top:18px; border-radius:13px; padding:16px 17px; font-size:14.5px; line-height:1.55; background:#EAF3F3; color:#12414A; display:none}
+  .explain.show{display:block; animation:rise .28s ease}
+  .explain b{color:var(--teal)}
+  @keyframes rise{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+  .next{margin-top:20px; display:none}
+  .next.show{display:block}
+  .ring{width:150px; height:150px; margin:6px auto 18px; position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .bgc{fill:none; stroke:#E3ECEE; stroke-width:12}
+  .ring .fgc{fill:none; stroke:url(#g); stroke-width:12; stroke-linecap:round; stroke-dasharray:408; stroke-dashoffset:408; transition:stroke-dashoffset 1s ease}
+  .score{position:absolute; inset:0; display:grid; place-content:center; text-align:center}
+  .score b{font-family:Georgia,serif; font-size:40px; line-height:1}
+  .score span{font-size:12px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase}
+  .verdict{text-align:center; font-family:Georgia,serif; font-size:22px; margin-bottom:6px}
+  .vtext{text-align:center; color:var(--muted); font-size:15px; line-height:1.55; margin-bottom:24px}
+  .foot{margin-top:24px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.5}
+  .hidden{display:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+  @media (max-width:520px){ .stage{padding:26px 20px} h1{font-size:25px} .q{font-size:19px} }
+</style>
+</head>
+<body>
+<div class="wrap"><div class="stage">
+  <section id="intro">
+    <div class="eyebrow"><svg class="pulse" viewBox="0 0 52 24"><path d="M1 12 h12 l4 -9 l6 18 l4 -9 h20"/></svg> Autoevaluación</div>
+    <h1 id="introTitle"></h1>
+    <p class="lede" id="introLede"></p>
+    <div class="meta" id="introMeta"></div>
+    <button class="btn" id="start">Comenzar</button>
+  </section>
+  <section id="quiz" class="hidden">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="counter"><span class="idx" id="idx"></span><span id="running">0 correctas</span></div>
+    <div class="q" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="explain" id="explain"></div>
+    <div class="next" id="nextWrap"><button class="btn" id="next">Siguiente</button></div>
+  </section>
+  <section id="result" class="hidden">
+    <div class="eyebrow" style="justify-content:center">Resultado</div>
+    <div class="ring">
+      <svg width="150" height="150"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0E7C86"/><stop offset="1" stop-color="#16B8A6"/></linearGradient></defs>
+      <circle class="bgc" cx="75" cy="75" r="65"/><circle class="fgc" id="ring" cx="75" cy="75" r="65"/></svg>
+      <div class="score"><b id="pct">0%</b><span id="frac"></span></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <p class="vtext" id="vtext"></p>
+    <button class="btn ghost" id="retry">Intentar de nuevo</button>
+    <div class="foot" id="foot"></div>
+  </section>
+</div></div>
+
+<script>
+/* === DATOS === */
+const META = {
+  title: "Anestesia en Liposucción de Grandes Volúmenes",
+  lede: "8 preguntas basadas en Buenrostro-Vásquez et al. (Anestesia en México, 2017). Recibirás explicación inmediata en cada respuesta.",
+  source: "Fuente: Buenrostro-Vásquez C. et al. Anestesia en liposucción de grandes volúmenes. Anestesia en México 2017;29(Supl.1):64-76. Artículo de revisión · IT Innova Business / Intrebu LLC"
+};
+const QUESTIONS = [
+  {
+    q: "¿Qué porcentaje de la solución tumescente infiltrada queda reabsorbida en los tejidos del paciente?",
+    opts: ["30%", "50%", "70%", "90%"],
+    answer: 2,
+    ex: "Solo el <b>30% es aspirado</b>; el <b>70% restante</b> es reabsorbido por el cuerpo. Este volumen debe contarse como líquido administrado al paciente para evitar hipervolemia y edema pulmonar."
+  },
+  {
+    q: "¿Cuál es el rango de dosis segura de lidocaína en la solución tumescente para liposucción, según el artículo?",
+    opts: ["7 mg/kg", "15–20 mg/kg", "35–55 mg/kg", "80–100 mg/kg"],
+    answer: 2,
+    ex: "El rango de seguridad en solución tumescente es <b>35–55 mg/kg</b>, muy superior a los 7 mg/kg convencionales con epinefrina. Los autores prefieren quedarse en el límite inferior de 35 mg/kg por prudencia."
+  },
+  {
+    q: "¿Cuándo se alcanzan los niveles plasmáticos pico de lidocaína tras la infiltración tumescente?",
+    opts: ["30–60 minutos", "2–4 horas", "8–32 horas", "48–72 horas"],
+    answer: 2,
+    ex: "El pico plasmático ocurre en un lapso muy variable de <b>8 a 32 horas</b> post-infiltración. Esto justifica que las pacientes no sean dadas de alta el mismo día (régimen ambulatorio contraindicado en grandes volúmenes)."
+  },
+  {
+    q: "¿En cuánto aumenta el riesgo de tromboembolia venosa al combinar liposucción de grandes volúmenes con abdominoplastia?",
+    opts: ["2 veces", "3.5 veces", "6.6 veces", "10 veces"],
+    answer: 2,
+    ex: "Se estima que la tasa de tromboembolismo <b>aumenta 6.6 veces</b> al combinar estos procedimientos. La mortalidad es 14 veces mayor que con liposucción exclusiva (1:3,281 vs. 1:47,415)."
+  },
+  {
+    q: "¿Cuál es la técnica anestésica de elección para liposucción de grandes volúmenes según los autores?",
+    opts: [
+      "Sedación IV con mascarilla nasal",
+      "Bloqueo epidural + sedación",
+      "Anestesia general balanceada con intubación orotraqueal y ventilación mecánica",
+      "Anestesia regional con bloqueo de campo"
+    ],
+    answer: 2,
+    ex: "La técnica de elección es la <b>anestesia general balanceada con intubación orotraqueal (sonda armada) y ventilación mecánica</b>, ya que permite control eficiente de la función respiratoria. La mascarilla laríngea no se recomienda pues el 60–70% del procedimiento es en decúbito prono."
+  },
+  {
+    q: "¿Cuál es la recomendación para la reposición IV de cristaloides durante la liposucción de grandes volúmenes?",
+    opts: [
+      "3–4 mL por cada mL aspirado",
+      "1–1.5 mL por cada mL aspirado",
+      "0.1–0.25 mL por cada mL aspirado",
+      "No se administran líquidos IV durante el procedimiento"
+    ],
+    answer: 2,
+    ex: "La reposición debe ser <b>restrictiva: 0.1–0.25 mL de cristaloide por cada mL de aspirado</b>. Administrar líquidos liberalmente puede llevar a hipervolemia y edema pulmonar, ya que el 70% de la solución infiltrada se reabsorbe."
+  },
+  {
+    q: "¿Por qué el midazolam representa un riesgo especial en la anestesia de liposucción tumescente?",
+    opts: [
+      "Produce hipotensión severa incompatible con epinefrina",
+      "Compite con la lidocaína en el citocromo P450 (3A4) y puede enmascarar signos de toxicidad",
+      "Inhibe el reflejo de tos necesario post-extubación",
+      "Produce metahemoglobinemia cuando se combina con lidocaína"
+    ],
+    answer: 1,
+    ex: "El <b>midazolam compite con la lidocaína en la subfamilia 3A4 del citocromo P450</b>, lo que puede disminuir el metabolismo de la lidocaína y elevar sus niveles plasmáticos. Además, sus efectos sedantes pueden <b>enmascarar los síntomas de toxicidad por lidocaína</b> hasta el inicio del colapso cardiovascular."
+  },
+  {
+    q: "¿Cuál de las siguientes es una ventaja de la solución de Hunstadt sobre la de Klein para tumescencia?",
+    opts: [
+      "Contiene mayor concentración de epinefrina",
+      "Usa solución salina isotónica como diluyente",
+      "Usa Ringer Lactato, evitando la sensación de quemadura al infiltrar y reduciendo la carga de sodio",
+      "Incorpora bicarbonato para aumentar el pH"
+    ],
+    answer: 2,
+    ex: "La solución de Hunstadt usa <b>Ringer Lactato</b> en lugar de solución salina isotónica. Esto <b>elimina la sensación de quemadura</b> durante la infiltración (causada por el pH ácido de la salina) y además <b>reduce la carga de sodio</b>. No requiere bicarbonato porque el Ringer no presenta el pH ácido problemático."
+  }
+];
+/* === FIN DATOS === */
+
+const $ = s => document.querySelector(s);
+const KEYS = ["A","B","C","D","E"];
+let i = 0, correct = 0, locked = false;
+
+$("#introTitle").textContent = META.title;
+$("#introLede").textContent = META.lede;
+$("#foot").innerHTML = META.source;
+$("#introMeta").innerHTML =
+  '<div><b>'+QUESTIONS.length+'</b> preguntas</div><div><b>~'+Math.max(3,Math.round(QUESTIONS.length*0.6))+'</b> min</div><div><b>100%</b> del paper</div>';
+
+$("#start").onclick = () => { $("#intro").classList.add("hidden"); $("#quiz").classList.remove("hidden"); render(); };
+$("#next").onclick = () => { i++; (i < QUESTIONS.length) ? render() : finish(); };
+$("#retry").onclick = () => { i=0; correct=0; $("#result").classList.add("hidden"); $("#quiz").classList.remove("hidden"); render(); };
+
+function render(){
+  locked = false;
+  const item = QUESTIONS[i];
+  $("#idx").textContent = String(i+1).padStart(2,"0")+" / "+String(QUESTIONS.length).padStart(2,"0");
+  $("#running").textContent = correct + (correct===1?" correcta":" correctas");
+  $("#fill").style.width = (i/QUESTIONS.length*100)+"%";
+  $("#qtext").textContent = item.q;
+  $("#explain").classList.remove("show");
+  $("#nextWrap").classList.remove("show");
+  $("#next").textContent = (i===QUESTIONS.length-1) ? "Ver resultado" : "Siguiente";
+  const box = $("#opts"); box.innerHTML = "";
+  item.opts.forEach((text,k) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.innerHTML = '<span class="key">'+KEYS[k]+'</span><span>'+text+'</span>';
+    b.onclick = () => choose(k,b);
+    box.appendChild(b);
+  });
+}
+function choose(k,el){
+  if(locked) return; locked = true;
+  const item = QUESTIONS[i];
+  const buttons = [...document.querySelectorAll(".opt")];
+  buttons.forEach(b => b.disabled = true);
+  buttons[item.answer].classList.add("correct");
+  if(k===item.answer) correct++; else el.classList.add*"wrong");
+  $("#running").textContent = correct + (correct===1?" correcta":" correctas");
+  const ex = $("#explain");
+  ex.innerHTML = (k===item.answer ? "<b>Correcto.</b> " : "<b>Respuesta correcta: "+KEYS[item.answer]+".</b> ") + item.ex;
+  ex.classList.add("show");
+  $("#nextWrap").classList.add("show");
+  $("#next").focus();
+}
+function finish(){
+  $("#quiz").classList.add("hidden");
+  $("#result").classList.remove("hidden");
+  const total = QUESTIONS.length, pct = Math.round(correct/total*100);
+  $("#fill").style.width = "100%";
+  $("#pct").textContent = pct+"%";
+  $("#frac").textContent = correct+" / "+total;
+  const off = 408 - (408*correct/total);
+  requestAnimationFrame(()=>{ setTimeout(()=>{ $("#ring").style.strokeDashoffset = off; },60); });
+  let v,t;
+  if(pct>=87){ v="Dominio experto"; t="Excelente. Manejas las cifras y los conceptos clave con solidez."; }
+  else if(pct>=62){ v="Buen nivel"; t="Vas bien encaminado. Repasa las preguntas que fallaste para afinar detalles."; }
+  else if(pct>=37){ v="En construcción"; t="Buen punto de partida. Vuelve al material y refuerza las ideas principales."; }
+  else { v="A reforzar"; t="Es momento de releer con calma: las cifras clave te darán una base firme."; }
+  $("#verdict").textContent = v; $("#vtext").textContent = t;
+}
+</script>
+</body>
+</html>
