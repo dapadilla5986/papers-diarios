@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infografía</title>
+<style>
+  :root{
+    --navy:#0E2A3B; --teal:#0E7C86; --mint:#16B8A6; --ink:#0E2A3B;
+    --muted:#5B7383; --line:#DCE7EA; --wash:#EEF4F5; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:#D9E6E8; color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:28px; -webkit-font-smoothing:antialiased}
+  .sheet{width:100%; max-width:820px; margin:0 auto; background:var(--card);
+    border-radius:18px; overflow:hidden; box-shadow:0 18px 50px rgba(14,42,59,.18)}
+
+  .hero{background:
+      radial-gradient(700px 300px at 88% -30%, #17414c 0%, transparent 60%), var(--navy);
+    color:#fff; padding:34px 38px 30px}
+  .eyebrow{display:flex; align-items:center; gap:10px; font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--mint); font-weight:700}
+  .pulse{width:28px; height:15px}
+  .pulse path{fill:none; stroke:var(--mint); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round}
+  .hero h1{font-family:Georgia,"Times New Roman",serif; font-size:30px; line-height:1.18;
+    margin:14px 0 12px; letter-spacing:-.01em; max-width:90%}
+  .ref{font-size:13px; color:#AFC6CE; line-height:1.5}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+    background:var(--line)}
+  .stat{background:var(--wash); padding:22px 20px; text-align:center}
+  .stat b{display:block; font-family:Georgia,serif; font-size:34px; color:var(--teal); line-height:1}
+  .stat span{display:block; margin-top:8px; font-size:12.5px; color:var(--muted); line-height:1.4}
+
+  .body{padding:30px 38px 14px}
+  .sec{margin-bottom:26px}
+  .sec h2{display:flex; align-items:center; gap:11px; font-size:16px; color:var(--navy);
+    margin-bottom:14px; letter-spacing:.01em}
+  .dot{flex:0 0 30px; height:30px; border-radius:9px; background:var(--teal); color:#fff;
+    font-family:Georgia,serif; font-weight:700; font-size:15px; display:grid; place-items:center}
+  .rows{display:grid; gap:10px}
+  .row{display:flex; gap:12px; align-items:flex-start; background:var(--wash);
+    border:1px solid var(--line); border-radius:12px; padding:13px 15px}
+  .row .mk{flex:0 0 8px; height:8px; margin-top:7px; border-radius:99px; background:var(--mint)}
+  .row p{font-size:14px; line-height:1.5; color:var(--ink)}
+  .row p b{color:var(--teal)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media (max-width:640px){ .grid2{grid-template-columns:1fr} }
+
+  .takeaway{margin:8px 38px 0; padding:18px 20px; border-radius:14px;
+    background:linear-gradient(100deg,#0E7C86,#16B8A6); color:#fff}
+  .takeaway span{font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.85; font-weight:700}
+  .takeaway p{font-family:Georgia,serif; font-size:18px; line-height:1.4; margin-top:6px}
+
+  .foot{padding:20px 38px 30px; font-size:11.5px; color:var(--muted); line-height:1.5}
+
+  @media print{
+    body{background:#fff; padding:0}
+    .sheet{box-shadow:none; border-radius:0; max-width:100%}
+    @page{margin:12mm}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="hero">
+    <div class="eyebrow"><svg class="pulse" viewBox="0 0 52 24"><path d="M1 12 h12 l4 -9 l6 18 l4 -9 h20"/></svg> <span id="kicker">Síntesis visual</span></div>
+    <h1 id="title"></h1>
+    <div class="ref" id="ref"></div>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="body" id="sections"></div>
+  <div class="takeaway"><span>Idea para llevar</span><p id="takeaway"></p></div>
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* === DATOS === */
+const DATA = {
+  kicker: "Síntesis visual · Anestesiología en Cirugía Plástica",
+  title: "Anestesia en Liposucción de Grandes Volúmenes",
+  ref: "Buenrostro-Vásquez C., Buck-Soltero J.A., Morales-Valle L.A., Granados-Tinajero S.O. · Anestesia en México 2017; Vol. 29 (Supl. No.1): 64-76",
+  stats: [
+    { n: "70%", label: "de la solución tumescente se reabsorbe al cuerpo (no se aspira)" },
+    { n: "35–55", label: "mg/kg dosis segura de lidocaína en técnica tumescente (vs. 7 mg/kg convencional)" },
+    { n: "6.6x", label: "mayor riesgo de tromboembolia si se combina con abdominoplastia" },
+    { n: "14x", label: "mayor mortalidad al combinar liposucción con abdominoplastia (1:3,281 vs. 1:47,415)" }
+  ],
+  sections: [
+    {
+      icon: "1",
+      heading: "Clasificación y fórmulas de la solución tumescente",
+      cols: 2,
+      items: [
+        "<b>Técnica seca:</b> sin infiltración — pérdida hemática 20–45% del aspirado.",
+        "<b>Técnica húmeda:</b> 200–300 mL por área — pérdida 4–30%.",
+        "<b>Súper húmeda:</b> 1 mL por cada mL aspirado — pérdida ~1%.",
+        "<b>Tumescente:</b> 3–4 mL por mL aspirado — pérdida ~1%, tejido firme."
+      ]
+    },
+    {
+      icon: "2",
+      heading: "Puntos críticos del manejo anestésico",
+      cols: 1,
+      items: [
+        "<b>Técnica de elección:</b> anestesia general balanceada con intubación orotraqueal (sonda armada) + ventilación mecánica. La mascarilla laríngea no se recomienda: 60–70% del procedimiento es en prono.",
+        "<b>Pico plasmático de lidocaína tardío:</b> 8–32 h post-infiltración → contraindicado régimen ambulatorio en grandes volúmenes.",
+        "<b>Líquidos IV restrictivos:</b> 0.1–0.25 mL por mL de aspirado. Recordar que el 70% de la solución infiltrada queda en tejidos.",
+        "<b>Hipotermia:</b> mantener quirófano ≥25°C, calentar dermoclisis, monitorear temperatura central + periférica."
+      ]
+    },
+    {
+      icon: "3",
+      heading: "Prevención de tromboembolia venosa (TVP/TEP)",
+      cols: 2,
+      items: [
+        "<b>Medias elásticas</b> desde el preoperatorio hasta deambulación normal.",
+        "<b>Compresión neumática intermitente</b> en MMII durante toda la cirugía.",
+        "<b>HBPM c/12h</b> en alto riesgo: TEV previo, cirugía &gt;5h, lipo &gt;5L, abdominoplastia combinada.",
+        "<b>Oxigenación hiperbárica</b> posoperatoria (4–5 sesiones) reduce ICAM-1 y favorece fibrinólisis."
+      ]
+    }
+  ],
+  takeaway: "En liposucción de grandes volúmenes, la ventilación mecánica controlada y la restricción hídrica no son opcionales — son los pilares que separan un resultado exitoso de una complicación fatal.",
+  source: "Fuente: Buenrostro-Vásquez et al. Anestesia en México 2017;29(Supl.1):64-76. Artículo de revisión · IT Innova Business / Intrebu LLC · Material docente"
+};
+/* === FIN DATOS === */
+
+const $ = s => document.querySelector(s);
+$("#kicker").textContent = DATA.kicker;
+$("#title").textContent = DATA.title;
+$("#ref").textContent = DATA.ref;
+$("#takeaway").textContent = DATA.takeaway;
+$("#foot").innerHTML = DATA.source;
+
+$("#stats").innerHTML = DATA.stats.map(s =>
+  '<div class="stat"><b>'+s.n+'</b><span>'+s.label+'</span></div>').join("");
+
+$("#sections").innerHTML = DATA.sections.map(sec => {
+  const rows = sec.items.map(it =>
+    '<div class="row"><span class="mk"></span><p>'+it+'</p></div>').join("");
+  const cls = sec.cols === 2 ? 'rows grid2' : 'rows';
+  return '<div class="sec"><h2><span class="dot">'+sec.icon+'</span>'+sec.heading+'</h2><div class="'+cls+'">'+rows+'</div></div>';
+}).join("");
+</script>
+</body>
+</html>
