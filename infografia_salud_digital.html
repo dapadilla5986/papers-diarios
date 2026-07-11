@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infografía — Salud Digital</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; }
+  .page { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .header { background: linear-gradient(135deg, #1A3A5C 0%, #2196F3 100%); color: white; border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+  .header-left h1 { font-size: 22px; font-weight: 800; }
+  .header-left p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .header-right { text-align: right; font-size: 12px; opacity: 0.8; }
+  .header-right .year { font-size: 36px; font-weight: 900; opacity: 1; }
+  .thesis { background: white; border-left: 6px solid #2196F3; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .thesis .label { font-size: 11px; font-weight: 700; color: #2196F3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .thesis p { font-size: 14px; color: #333; line-height: 1.6; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card { background: white; border-radius: 12px; padding: 16px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .stat-card .number { font-size: 28px; font-weight: 900; color: #1A3A5C; line-height: 1; }
+  .stat-card .unit { font-size: 11px; color: #2196F3; font-weight: 700; }
+  .stat-card .desc { font-size: 11px; color: #666; margin-top: 6px; line-height: 1.4; }
+  .section-title { font-size: 13px; font-weight: 800; color: #1A3A5C; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .apps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .app-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .app-card .icon { font-size: 24px; margin-bottom: 8px; }
+  .app-card h3 { font-size: 13px; font-weight: 700; color: #1A3A5C; margin-bottom: 6px; }
+  .app-card ul { list-style: none; }
+  .app-card li { font-size: 11px; color: #555; padding: 2px 0 2px 10px; position: relative; line-height: 1.4; }
+  .app-card li::before { content: "›"; position: absolute; left: 0; color: #2196F3; font-weight: 700; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .challenge-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .barrier { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .barrier-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .barrier-text h4 { font-size: 12px; font-weight: 700; color: #333; }
+  .barrier-text p { font-size: 11px; color: #666; line-height: 1.4; }
+  .b1 { background: #FFE0E0; }
+  .b2 { background: #FFF3E0; }
+  .b3 { background: #E8F5E9; }
+  .b4 { background: #E3F2FD; }
+  .timeline { background: white; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .timeline-items { display: flex; align-items: flex-start; gap: 0; position: relative; margin-top: 10px; }
+  .timeline-items::before { content: ''; position: absolute; top: 14px; left: 14px; right: 14px; height: 2px; background: linear-gradient(to right, #1A3A5C, #2196F3); }
+  .t-item { flex: 1; text-align: center; position: relative; }
+  .t-dot { width: 28px; height: 28px; background: #1A3A5C; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; position: relative; z-index: 1; }
+  .t-year { font-size: 11px; font-weight: 700; color: #1A3A5C; }
+  .t-desc { font-size: 10px; color: #666; line-height: 1.4; margin-top: 3px; padding: 0 4px; }
+  .alerts-col { display: flex; flex-direction: column; gap: 10px; }
+  .highlight-card { border-radius: 12px; padding: 14px 16px; color: white; }
+  .h-blue { background: linear-gradient(135deg, #1A3A5C, #2196F3); }
+  .h-green { background: linear-gradient(135deg, #1B5E20, #43A047); }
+  .h-red { background: linear-gradient(135deg, #B71C1C, #E53935); }
+  .highlight-card .big { font-size: 30px; font-weight: 900; line-height: 1; }
+  .highlight-card .unit { font-size: 12px; opacity: 0.9; font-weight: 600; }
+  .highlight-card p { font-size: 11px; opacity: 0.85; margin-top: 5px; line-height: 1.4; }
+  .footer { background: #1A3A5C; color: white; border-radius: 12px; padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+  .footer .brand { font-weight: 700; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <h1>🩺 SALUD DIGITAL: Aplicaciones, Desafíos y Futuro</h1>
+      <p>Hu et al. · Frontiers in Public Health · Revisión narrativa · 128 estudios + 10 reportes de política</p>
+    </div>
+    <div class="header-right">
+      <div class="year">2025</div>
+      <div>Frontiers in Public Health</div>
+    </div>
+  </div>
+
+  <div class="thesis">
+    <div class="label">🎯 Tesis Central</div>
+    <p>Las Tecnologías de Salud Digital (DHTs) transforman la atención médica moderna mejorando calidad y seguridad en todo el continuo de la enfermedad —desde prevención hasta pronóstico— mediante IA, wearables y telemedicina, aunque persisten desafíos críticos en ética digital, regulación, privacidad e integración clínica.</p>
+  </div>
+
+  <div class="section-title">📊 Cifras que Impactan</div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="number">224M</div>
+      <div class="unit">USUARIOS 2024</div>
+      <div class="desc">usuarios globales de smartwatches para salud y fitness</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">22%</div>
+      <div class="unit">REDUCCIÓN</div>
+      <div class="desc">menos readmisiones por falla cardíaca con monitoreo remoto</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">84%</div>
+      <div class="unit">PRECISIÓN</div>
+      <div class="desc">del modelo DeepMPTB para predecir parto prematuro con IA</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">89%</div>
+      <div class="unit">SATISFACCIÓN</div>
+      <div class="desc">de pacientes con programas de monitoreo remoto (RPM)</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="section-title">📅 Evolución de la Salud Digital</div>
+    <div class="timeline-items">
+      <div class="t-item"><div class="t-dot">1959</div><div class="t-year">1959</div><div class="t-desc">Primera teleconsulta psiquiátrica (TV bidireccional)</div></div>
+      <div class="t-item"><div class="t-dot">1968</div><div class="t-year">1968</div><div class="t-desc">POMR: precursor del expediente electrónico</div></div>
+      <div class="t-item"><div class="t-dot">2000</div><div class="t-year">2000s</div><div class="t-desc">Expansión: wearables, internet móvil, big data en salud</div></div>
+      <div class="t-item"><div class="t-dot">2010</div><div class="t-year">2010+</div><div class="t-desc">Blockchain, IA y medicina de precisión personalizad</div></div>
+      <div class="t-item"><div class="t-dot">COV</div><div class="t-year">COVID-19</div><div class="t-desc">Aceleración masiva: telemedicina se vuelve indispensable</div></div>
+      <div class="t-item"><div class="t-dot">2025</div><div class="t-year">Futuro</div><div class="t-desc">Federated learning, estándares globales, equidad digital</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">🔬 Aplicaciones en el Continuo de la Enfermedad</div>
+  <div class="apps-grid">
+    <div class="app-card">
+      <div class="icon">🛡️</div>
+      <h3>Prevención</h3>
+      <ul>
+        <li>Wearables: FC, glucosa, sueño en tiempo real</li>
+        <li>Digital twins para predicción de riesgos gestacionales</li>
+        <li>CGM + IA: alertas anticipadas en diabéticos</li>
+        <li>IA predice parto prematuro con 84.1% de precisión</li>
+      </ul>
+    </div>
+    <div class="app-card">
+      <div class="icon">🔍</div>
+      <h3>Diagnóstico</h3>
+      <ul>
+        <li>IA + imágenes: cáncer, cataratas, retinop. diabética</li>
+        <li>ML: ecocardiografía automatizada</li>
+        <li>ARDD: diagnóstico enfermedades raras (multimodal)</li>
+        <li>Chatbots: detección temprana ansiedad/depresión</li>
+      </ul>
+    </div>
+    <div class="app-card">
+      <div class="icon">💊</div>
+      <h3>Tratamiento</h3>
+      <ul>
+        <li>VR: manejo de dolor y rehabilitación motora</li>
+        <li>Impresión 3D: fármacos y prótesis óseas</li>
+        <li>e-POCT: reducción antibióticos en niños (AMR)</li>
+        <li>CBT digital mejora control glucémico (↓0.39% HbA1c)</li>
+      </ul>
+    </div>
+    <div class="app-card">
+      <div class="icon">📈</div>
+      <h3>Pronóstico</h3>
+      <ul>
+        <li>ML/DL: predicción COPD, cáncer, esquizofrenia</li>
+        <li>Telemedicina: adherencia en TB e HTA crónica</li>
+        <li>Wearables: monitoreo continuo cardiovascular</li>
+        <li>IA + biomarcadores: estratificación oncológica</li>
+      </ul>
+    </div>
+    <div class="app-card">
+      <div class="icon">🌍</div>
+      <h3>Salud Pública</h3>
+      <ul>
+        <li>m-health: acceso a salud en zonas rurales/remotas</li>
+        <li>RPM: gestión domiciliaria de enfermedades crónicas</li>
+        <li>ML + IoT: vigilancia epidemiológica en tiempo real</li>
+        <li>Drones: entrega de suministros médicos en desastres</li>
+      </ul>
+    </div>
+    <div class="app-card">
+      <div class="icon">🎓</div>
+      <h3>Educación Médica</h3>
+      <ul>
+        <li>Hologramas + modelos 3D para práctica quirúrgica</li>
+        <li>PGGAN: imágenes dentales sintéticas para DL</li>
+        <li>Cursos digitales en universidades (Queensland, Semmelweis)</li>
+        <li>Centros médicos académicos como hub de innovación</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">⚡ Datos de Alerta</div>
+      <div class="alerts-col">
+        <div class="highlight-card h-red">
+          <div class="big">55.1%</div>
+          <div class="unit">MÁS BRECHAS DE DATOS (EE.UU. 2020 vs 2019)</div>
+          <p>La ciberseguridad es barrera crítica para la confianza en las DHTs.</p>
+        </div>
+        <div class="highlight-card h-blue">
+          <div class="big">&gt;50%</div>
+          <div class="unit">REDUCCIÓN EN DERIVACIONES DE PACIENTES AFROAMERICANOS</div>
+          <p>Sesgo algorítmico: algoritmos de costo reprodujeron inequidad racial.</p>
+        </div>
+        <div class="highlight-card h-green">
+          <div class="big">18,000</div>
+          <div class="unit">INCIDENTES DE SEGURIDAD POR EHR (EE.UU. 2007-2018)</div>
+          <p>La interoperabilidad sigue siendo el talón de Aquiles de la salud digital.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">🚧 4 Desafíos Principales y Soluciones</div>
+      <div class="challenge-card" style="height:calc(100% - 30px);">
+        <div class="barrier">
+          <div class="barrier-icon b1">⚖️</div>
+          <div class="barrier-text">
+            <h4>Ética y Equidad Digital</h4>
+            <p>Brecha digital, sesgo algorítmico, "pobreza de datos" → Solución: estándares HL7 FHIR, diseño inclusivo, alfabetización digital</p>
+          </div>
+        </div>
+        <div class="barrier">
+          <div class="barrier-icon b2">⚙️</div>
+          <div class="barrier-text">
+            <h4>Restricciones Técnicas y Regulatorias</h4>
+            <p>Legislación desactualizada, interoperabilidad deficiente → Solución: marcos legales claros, incentivos fiscales, pilotos reales</p>
+          </div>
+        </div>
+        <div class="barrier">
+          <div class="barrier-icon b3">🔒</div>
+          <div class="barrier-text">
+            <h4>Privacidad y Seguridad de Datos</h4>
+            <p>Soberanía de datos, riesgo re-identificación → Solución: GDPR, federated learning, anonimización, educación pública</p>
+          </div>
+        </div>
+        <div class="barrier">
+          <div class="barrier-icon b4">🏥</div>
+          <div class="barrier-text">
+            <h4>Integración al Flujo Clínico</h4>
+            <p>Incompatibilidad sistemas, sobrecarga → Solución: reingeniería de procesos, nuevos códigos de reembolso, blockchain + middleware</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>
+      <div class="brand">IT Innova Business / Intrebu LLC</div>
+      <div>Material educativo — Uso en capacitación y docencia universitaria</div>
+    </div>
+    <div style="text-align:right;">
+      <div>Hu et al. (2025) · Front. Public Health 13:1646802</div>
+      <div>doi: 10.3389/fpubh.2025.1646802</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
