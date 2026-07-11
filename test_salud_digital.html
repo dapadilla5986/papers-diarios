@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test — Salud Digital</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
+  .container { max-width: 780px; margin: 0 auto; padding: 24px; }
+  .header { background: linear-gradient(135deg, #1A3A5C, #2196F3); color: white; border-radius: 16px; padding: 24px 28px; margin-bottom: 24px; }
+  .header h1 { font-size: 20px; font-weight: 800; }
+  .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .score-bar { background: white; border-radius: 12px; padding: 16px 22px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .score-display { font-size: 28px; font-weight: 900; color: #1A3A5C; }
+  .score-label { font-size: 12px; color: #666; }
+  .progress-wrap { flex: 1; margin: 0 20px; }
+  .progress-bar { height: 8px; background: #E3F2FD; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, #1A3A5C, #2196F3); border-radius: 4px; transition: width 0.5s; }
+  .progress-text { font-size: 11px; color: #888; margin-top: 4px; text-align: center; }
+  .question-card { background: white; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
+  .question-card.answered { opacity: 0.85; }
+  .q-number { font-size: 11px; font-weight: 700; color: #2196F3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .q-text { font-size: 15px; font-weight: 600; color: #1A3A5C; margin-bottom: 16px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn { background: #F5F9FF; border: 2px solid #E3F2FD; border-radius: 10px; padding: 12px 16px; text-align: left; cursor: pointer; font-size: 13px; color: #333; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+  .option-btn:hover:not(:disabled) { background: #E3F2FD; border-color: #2196F3; }
+  .option-btn:disabled { cursor: default; }
+  .option-btn.correct { background: #E8F5E9; border-color: #43A047; color: #1B5E20; }
+  .option-btn.wrong { background: #FFEBEE; border-color: #E53935; color: #B71C1C; }
+  .option-btn.reveal { background: #E8F5E9; border-color: #43A047; color: #1B5E20; }
+  .option-letter { width: 26px; height: 26px; border-radius: 50%; background: #2196F3; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .correct .option-letter { background: #43A047; }
+  .wrong .option-letter { background: #E53935; }
+  .reveal .option-letter { background: #43A047; }
+  .feedback { margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+  .feedback.correct-fb { background: #E8F5E9; color: #1B5E20; border-left: 4px solid #43A047; }
+  .feedback.wrong-fb { background: #FFEBEE; color: #B71C1C; border-left: 4px solid #E53935; }
+  .results-panel { background: white; border-radius: 14px; padding: 28px; margin-top: 20px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.12); display: none; }
+  .results-panel.show { display: block; }
+  .final-score { font-size: 56px; font-weight: 900; color: #1A3A5C; }
+  .final-label { font-size: 16px; color: #666; margin-bottom: 20px; }
+  .badge { display: inline-block; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 15px; margin-bottom: 16px; }
+  .badge.excellent { background: #E8F5E9; color: #1B5E20; }
+  .badge.good { background: #E3F2FD; color: #1A3A5C; }
+  .badge.needs { background: #FFF3E0; color: #E65100; }
+  .restart-btn { background: linear-gradient(135deg, #1A3A5C, #2196F3); color: white; border: none; border-radius: 10px; padding: 14px 32px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+  .restart-btn:hover { opacity: 0.9; }
+  .footer-note { font-size: 11px; color: #aaa; margin-top: 24px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>✏️ Test de Comprensión — Salud Digital</h1>
+    <p>Hu et al. (2025) · Front. Public Health · 8 preguntas de opción múltiple</p>
+  </div>
+
+  <div class="score-bar">
+    <div>
+      <div class="score-display" id="currentScore">0/8</div>
+      <div class="score-label">Respuestas correctas</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-text" id="progressText">0 de 8 respondidas</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:11px;color:#888;">IT Innova Business</div>
+      <div style="font-size:11px;color:#888;">Intrebu LLC</div>
+    </div>
+  </div>
+
+  <div id="questionsContainer"></div>
+  <div class="results-panel" id="resultsPanel"></div>
+  <div class="footer-note">Material educativo — IT Innova Business / Intrebu LLC · Basado en Hu et al. (2025)</div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "¿Cuántos usuarios globales de smartwatches para salud y fitness se esperaban en 2024, según el paper?",
+    opts: ["A) 45.2 millones", "B) 112 millones", "C) 224.31 millones", "D) 500 millones"],
+    correct: 2,
+    fb: "✅ Correcto. El paper cita que para 2024 se esperan 224.31 millones de usuarios globales de smartwatches, con el 92% usándolos para salud y fitness (ref. 30)."
+  },
+  {
+    q: "¿En qué porcentaje los sistemas de Monitoreo Remoto de Pacientes (RPM) redujeron las primeras readmisiones hospitalarias por falla cardíaca?",
+    opts: ["A) 5%", "B) 12%", "C) 22%", "D) 38%"],
+    correct: 2,
+    fb: "✅ Correcto. Los sistemas RPM han demostrado reducir las primeras readmisiones por falla cardíaca hasta en un 22% y la mortalidad cardiovascular en 3.46%."
+  },
+  {
+    q: "El modelo de IA 'DeepMPTB' fue desarrollado para predecir:",
+    opts: ["A) El riesgo de infarto miocárdico en pacientes diabéticos", "B) El riesgo de parto prematuro analizando microbioma vaginal", "C) La progresión del cáncer de mama mediante imágenes radiológicas", "D) La aparición de convulsiones epilépticas en tiempo real"],
+    correct: 1,
+    fb: "✅ Correcto. DeepMPTB (Deep Learning Model for Preterm Birth Prediction) predice el riesgo de parto prematuro analizando datos del microbioma vaginal, con una precisión del 84.10%."
+  },
+  {
+    q: "¿Cuál fue el incremento en brechas de datos de salud en EE.UU. en 2020 comparado con 2019?",
+    opts: ["A) 12.5%", "B) 27.3%", "C) 40.0%", "D) 55.1%"],
+    correct: 3,
+    fb: "✅ Correcto. Las brechas de ciberseguridad en salud en EE.UU. aumentaron un 55.1% en 2020 vs 2019, evidenciando la gravedad de los riesgos de privacidad en las DHTs."
+  },
+  {
+    q: "El 'sesgo algorítmico' descrito en el paper se refiere a que un algoritmo basado en costos:",
+    opts: ["A) Era demasiado costoso para hospitales pequeños", "B) Sistemáticamente subestimó la gravedad de pacientes afroamericanos, reduciendo >50% sus derivaciones a cuidados adicionales", "C) Solo funcionaba correctamente en pacientes con seguro médico privado", "D) Tenía errores de cálculo en el 50% de los casos analizados"],
+    correct: 1,
+    fb: "✅ Correcto. El paper describe que un algoritmo de costo sistemáticamente subestimó la severidad de pacientes afroamericanos, reduciendo sus derivaciones para atención adicional en más del 50%, siendo un ejemplo crítico de sesgo algorítmico en IA médica."
+  },
+  {
+    q: "¿Qué tecnología de IA propone el paper como solución para proteger la privacidad de datos sin necesidad de compartirlos directamente?",
+    opts: ["A) Blockchain centralizado", "B) Digital twins", "C) Federated learning (aprendizaje federado)", "D) HL7 FHIR"],
+    correct: 2,
+    fb: "✅ Correcto. El federated learning (aprendizaje federado) permite entrenar algoritmos de IA de manera descentralizada sin necesidad de compartir datos sensibles del paciente, abordando las preocupaciones de privacidad y seguridad."
+  },
+  {
+    q: "Entre 2007 y 2018, ¿cuántos incidentes de seguridad del paciente relacionados con implementación inadecuada de EHR (expedientes electrónicos) ocurrieron en EE.UU.?",
+    opts: ["A) 1,200", "B) 5,500", "C) 18,000", "D) 125,000"],
+    correct: 2,
+    fb: "✅ Correcto. El paper cita que la implementación incorrecta de EHR y problemas de interoperabilidad generaron 18,000 incidentes de seguridad del paciente en EE.UU. entre 2007 y 2018, destacando los riesgos de una mala integración clínica."
+  },
+  {
+    q: "Según el paper, ¿cuál fue el efecto de la terapia cognitivo-conductual digital (CBT digital) en pacientes diabéticos tipo 2 durante 3 meses?",
+    opts: ["A) Aumentó la frecuencia de hipoglucemia en un 15%", "B) No mostró diferencia significativa vs. atención estándar", "C) Redujo los niveles de HbA1c en 0.39% vs. atención estándar y mejoró la adherencia al tratamiento", "D) Redujo el peso corporal en promedio 5 kg más que el grupo control"],
+    correct: 2,
+    fb: "✅ Correcto. En diabéticos que recibieron CBT digital, la adherencia medicamentosa mejoró y los niveles de HbA1c disminuyeron en 0.39% comparado con la atención usual en un período de observación de 3 meses."
+  }
+];
+
+let answered = new Array(questions.length).fill(false);
+let correct = new Array(questions.length).fill(false);
+let score = 0;
+
+function render() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card' + (answered[qi] ? ' answered' : '');
+    card.id = 'q' + qi;
+
+    let optionsHtml = q.opts.map((opt, oi) => {
+      let cls = 'option-btn';
+      let letter = String.fromCharCode(65 + oi);
+      if (answered[qi]) {
+        if (oi === q.correct) cls += ' correct';
+        else if (oi === parseInt(card.dataset.selected || -1) && oi !== q.correct) cls += ' wrong';
+      }
+      return `<button class="${cls}" onclick="answer(${qi},${oi})" ${answered[qi] ? 'disabled' : ''}>
+        <span class="option-letter">${letter}</span>${opt.substring(3)}
+      </button>`;
+    }).join('');
+
+    let feedbackHtml = '';
+    if (answered[qi]) {
+      const fbCls = correct[qi] ? 'correct-fb' : 'wrong-fb';
+      feedbackHtml = `<div class="feedback ${fbCls}">${q.fb}</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="q-number">Pregunta ${qi + 1} de ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${optionsHtml}</div>
+      ${feedbackHtml}
+    `;
+    card.dataset.selected = answered[qi] ? (cards[qi] || -1) : -1;
+    container.appendChild(card);
+  });
+  updateScore();
+}
+
+const selectedMap = {};
+
+function answer(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  selectedMap[qi] = oi;
+  if (oi === questions[qi].correct) { correct[qi] = true; score++; }
+
+  const card = document.getElementById('q' + qi);
+  card.classList.add('answered');
+  const btns = card.querySelectorAll('.option-btn');
+  btns.forEach((btn, bi) => {
+    btn.disabled = true;
+    if (bi === questions[qi].correct) btn.classList.add('correct');
+    else if (bi === oi && bi !== questions[qi].correct) btn.classList.add('wrong');
+    btn.querySelector('.option-letter').style.background = bi === questions[qi].correct ? '#43A047' : (bi === oi ? '#E53935' : '#9E9E9E');
+  });
+
+  const fbCls = correct[qi] ? 'correct-fb' : 'wrong-fb';
+  const fb = document.createElement('div');
+  fb.className = 'feedback ' + fbCls;
+  fb.textContent = questions[qi].fb;
+  card.querySelector('.options').after(fb);
+
+  updateScore();
+
+  if (answered.every(a => a)) showResults();
+}
+
+function updateScore() {
+  const total = answered.filter(Boolean).length;
+  document.getElementById('currentScore').textContent = score + '/' + questions.length;
+  document.getElementById('progressFill').style.width = (total / questions.length * 100) + '%';
+  document.getElementById('progressText').textContent = total + ' de ' + questions.length + ' respondidas';
+}
+
+function showResults() {
+  const panel = document.getElementById('resultsPanel');
+  panel.classList.add('show');
+  const pct = Math.round(score / questions.length * 100);
+  let badgeCls, badgeText, msg;
+  if (pct >= 87) { badgeCls='excellent'; badgeText='🏆 Excelente dominio del tema'; msg='Tienes un sólido entendimiento de las DHTs, sus aplicaciones y desafíos. ¡Listo para enseñar el tema!'; }
+  else if (pct >= 62) { badgeCls='good'; badgeText='👍 Buen desempeño'; msg='Comprendes los conceptos centrales. Repasa las áreas donde fallaste para consolidar tu conocimiento.'; }
+  else { badgeCls='needs'; badgeText='📖 Necesitas reforzar'; msg='Te recomendamos releer la guía y la infografía antes de volver a intentar el test.'; }
+
+  panel.innerHTML = `
+    <div class="final-score">${pct}%</div>
+    <div class="final-label">${score} de ${questions.length} respuestas correctas</div>
+    <div class="badge ${badgeCls}">${badgeText}</div>
+    <p style="color:#555;font-size:14px;line-height:1.6;max-width:480px;margin:0 auto 20px;">${msg}</p>
+    <button class="restart-btn" onclick="restart()">🔄 Reintentar Test</button>
+  `;
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function restart() {
+  answered = new Array(questions.length).fill(false);
+  correct = new Array(questions.length).fill(false);
+  score = 0;
+  document.getElementById('resultsPanel').classList.remove('show');
+  document.getElementById('resultsPanel').innerHTML = '';
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
